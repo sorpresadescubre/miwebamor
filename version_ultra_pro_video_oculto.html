@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nuestra Historia</title>
+<style>
+* { box-sizing:border-box; }
+html, body {
+  margin:0; padding:0; min-height:100%;
+  font-family:"Helvetica Neue", Arial, sans-serif;
+  background:radial-gradient(circle at top, #4a1838 0%, #23101f 45%, #140b14 100%);
+  color:#fff; overflow-x:hidden;
+}
+.screen {
+  position:fixed; inset:0; display:none;
+  justify-content:center; align-items:center; flex-direction:column;
+  text-align:center; padding:20px;
+  opacity:0; transform:translateY(18px) scale(.985);
+  transition:opacity .45s ease, transform .45s ease;
+  overflow-y:auto;
+}
+.screen.active { display:flex; opacity:1; transform:translateY(0) scale(1); }
+.card {
+  width:100%; max-width:430px;
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.14);
+  border-radius:30px; padding:30px 24px;
+  box-shadow:0 10px 30px rgba(0,0,0,.3);
+  backdrop-filter:blur(4px);
+}
+.heart { font-size:30px; margin-bottom:10px; animation:pulse 1.8s infinite; }
+@keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }
+.eyebrow { letter-spacing:4px; font-size:12px; color:#ffd7e2; margin-bottom:10px; }
+.names { font-weight:700; color:#ffd7e2; margin-bottom:10px; font-size:18px; font-family:Georgia,"Times New Roman",serif; }
+h1,h2,.akai-title,.cream-title,.date,.ti { font-family:Georgia,"Times New Roman",serif; font-weight:700; }
+h1 { font-size:38px; margin:10px 0 14px; }
+h2 { font-size:28px; margin:10px 0 14px; }
+p { opacity:.96; line-height:1.58; font-size:18px; }
+.btn {
+  background:linear-gradient(45deg,#ff4d8f,#d94dc8);
+  border:none; padding:15px 25px; border-radius:30px; color:white;
+  font-size:18px; margin-top:10px; font-weight:700; cursor:pointer;
+  box-shadow:0 10px 24px rgba(255,77,143,.28);
+  transition:transform .18s ease, box-shadow .18s ease;
+}
+.btn:hover,.btn:active { transform:translateY(-1px) scale(1.01); box-shadow:0 12px 28px rgba(255,77,143,.34); }
+.btn.secondary { background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.18); box-shadow:none; }
+.btn-row { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:14px; }
+.date { font-size:30px; letter-spacing:2px; color:#fff1f5; margin-bottom:8px; }
+.akai-title { color:#ffb2bb; font-size:30px; margin:8px 0 14px; }
+.legend { color:#fff3f7; font-size:18px; line-height:1.7; margin:0 auto 14px; max-width:340px; }
+.legend em { font-family:Georgia,"Times New Roman",serif; font-style:italic; }
+.hands-illo { width:180px; height:180px; margin:10px auto 12px; position:relative; animation:fadeUp .8s ease both; }
+.hands-illo .circle { position:absolute; inset:0; border-radius:50%; background:rgba(255,255,255,.08); }
+.hand { position:absolute; width:54px; height:86px; background:linear-gradient(180deg,#ff9d78,#ff7f66); border-radius:28px 28px 18px 18px; bottom:22px; }
+.left { left:34px; transform:rotate(10deg); }
+.right { right:34px; transform:rotate(-10deg); }
+.thread-svg { position:absolute; inset:0; }
+.cream-screen { background:#efe2cf; color:#231815; }
+.scroll-wrap { width:100%; max-width:420px; padding:22px 20px 34px; text-align:center; }
+.cream-title { color:#dd8d89; font-size:34px; margin:4px 0 8px; animation:fadeUp .7s ease both; }
+.cream-text {
+  color:#1f1714; font-size:20px; line-height:1.7; margin:0 auto; max-width:350px;
+  font-family:Georgia,"Times New Roman",serif; min-height:320px; white-space:pre-line;
+}
+.typed-cursor { display:inline-block; width:10px; animation:blink 1s step-end infinite; }
+@keyframes blink { 50% { opacity:0; } }
+.ti { color:#e69b95; font-size:54px; line-height:1; margin:8px 0 8px; animation:fadeUp .7s ease both; }
+.spool-wrap { margin:16px auto 14px; width:170px; display:flex; flex-direction:column; align-items:center; gap:12px; animation:fadeUp .8s ease both; }
+.spool-button { background:none; border:none; padding:0; cursor:pointer; transition:transform .18s ease; }
+.spool-button:hover,.spool-button:active { transform:scale(1.03); }
+.pull-text { color:#c97575; font-size:18px; font-weight:700; line-height:1.4; }
+.back-link { margin-top:14px; display:inline-block; background:none; border:none; color:inherit; opacity:.8; font-size:16px; text-decoration:underline; cursor:pointer; }
+.photo-card { max-width:460px; }
+.photo {
+  width:100%; display:block; border-radius:24px; margin:0 auto 16px;
+  box-shadow:0 10px 26px rgba(0,0,0,.35); border:1px solid rgba(255,255,255,.14);
+  animation:fadeUp .7s ease both;
+}
+.video-shell {
+  width:100%; max-width:390px; margin:0 auto;
+}
+.video-cover {
+  position:relative; width:100%; aspect-ratio:9 / 16; overflow:hidden;
+  border-radius:22px; background:#000;
+  box-shadow:0 10px 26px rgba(0,0,0,.35); border:1px solid rgba(255,255,255,.14);
+  cursor:pointer;
+}
+.video-cover img {
+  width:100%; height:100%; object-fit:cover; display:block; filter:brightness(.78);
+}
+.video-cover::after {
+  content:""; position:absolute; inset:0;
+  background:linear-gradient(180deg, rgba(0,0,0,.08), rgba(0,0,0,.24));
+}
+.play-badge {
+  position:absolute; inset:0; display:flex; align-items:center; justify-content:center; z-index:2;
+}
+.play-circle {
+  width:82px; height:82px; border-radius:50%;
+  background:rgba(255,255,255,.18); border:1px solid rgba(255,255,255,.32);
+  backdrop-filter:blur(5px);
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:0 10px 24px rgba(0,0,0,.28);
+}
+.play-triangle {
+  margin-left:6px;
+  width:0; height:0;
+  border-left:24px solid #fff;
+  border-top:15px solid transparent;
+  border-bottom:15px solid transparent;
+}
+.video-cover-text {
+  position:absolute; left:18px; right:18px; bottom:18px; z-index:2;
+  color:#fff; text-align:left;
+}
+.video-cover-text .mini {
+  font-size:12px; letter-spacing:3px; color:#ffd7e2; margin-bottom:8px;
+}
+.video-cover-text .title {
+  font-family:Georgia,"Times New Roman",serif; font-size:28px; line-height:1.1;
+}
+.video-frame-wrap {
+  display:none;
+  width:100%; aspect-ratio:9 / 16; border-radius:22px; overflow:hidden; background:#000;
+  box-shadow:0 10px 26px rgba(0,0,0,.35); border:1px solid rgba(255,255,255,.14);
+}
+iframe { width:100%; height:100%; border:none; display:block; }
+.video-tip { font-size:14px; color:#f6d6df; margin-top:14px; }
+.message-box {
+  background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.14);
+  border-radius:24px; padding:22px 18px; animation:fadeUp .7s ease both;
+}
+.logo-space {
+  width:180px; height:180px; margin:18px auto 8px; border:2px dashed rgba(255,255,255,.35);
+  border-radius:24px; display:flex; align-items:center; justify-content:center;
+  color:#ffd7e2; font-weight:700; padding:16px; animation:fadeUp .7s ease both;
+}
+.small { font-size:14px; color:#f4dce5; }
+.dots { position:fixed; left:50%; bottom:12px; transform:translateX(-50%); display:flex; gap:7px; z-index:30; }
+.dot { width:8px; height:8px; border-radius:50%; background:rgba(255,255,255,.25); transition:transform .2s ease, background .2s ease; }
+.dot.active { background:rgba(255,255,255,.92); transform:scale(1.18); }
+@keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+</style>
+</head>
+<body>
+
+<div class="screen active" id="s1">
+  <div class="card">
+    <div class="heart">❤️</div>
+    <div class="eyebrow">NUESTRA HISTORIA</div>
+    <div class="names">Luis y Luisa</div>
+    <h1>Espera...</h1>
+    <p>Antes de seguir, quiero que vivas esta sorpresa despacito.</p>
+    <button class="btn" onclick="showScreen(2)">Descúbrelo</button>
+    <p style="margin-top:15px;">Pulsa para empezar esta pequeña aventura y descubrir lo que he preparado para ti.</p>
+  </div>
+</div>
+
+<div class="screen" id="s2">
+  <div class="card">
+    <div class="date">01 / 01 / 01</div>
+    <div class="names">Luis y Luisa</div>
+    <div class="hands-illo">
+      <div class="circle"></div>
+      <div class="hand left"></div>
+      <div class="hand right"></div>
+      <svg class="thread-svg" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M58 104 C 70 84, 86 82, 90 98 C 96 116, 111 114, 123 98" stroke="#E83A4E" stroke-width="3" fill="none"/>
+        <path d="M62 108 C 73 120, 78 135, 86 144" stroke="#E83A4E" stroke-width="2.5" fill="none"/>
+        <path d="M118 108 C 106 121, 101 134, 94 144" stroke="#E83A4E" stroke-width="2.5" fill="none"/>
+        <path d="M88 83 C 85 79, 79 79, 78 85 C 77 90, 82 94, 90 100 C 98 94, 103 90, 102 85 C 101 79, 95 79, 92 83 C 91 84, 89 84, 88 83Z" fill="#E83A4E"/>
+      </svg>
+    </div>
+    <div class="akai-title">Akai Ito</div>
+    <p class="legend">
+      <em>Es una leyenda japonesa.</em><br>
+      Dice que dos personas destinadas a encontrarse<br>
+      están unidas por un hilo rojo invisible.
+    </p>
+    <div class="btn-row">
+      <button class="btn secondary" onclick="showScreen(1)">← Volver</button>
+      <button class="btn" onclick="showScreen(3)">Seguir</button>
+    </div>
+  </div>
+</div>
+
+<div class="screen cream-screen" id="s3">
+  <div class="scroll-wrap">
+    <div class="cream-title">Akai Ito</div>
+    <div class="cream-text" id="typedText"></div>
+    <div class="ti" id="tiBlock" style="display:none;">♡<br>TI</div>
+    <div class="spool-wrap" id="spoolBlock" style="display:none;">
+      <button class="spool-button" onclick="showScreen(4)" aria-label="Tira del hilo rojo para seguir">
+        <svg width="120" height="150" viewBox="0 0 120 150" xmlns="http://www.w3.org/2000/svg">
+          <rect x="20" y="15" width="80" height="18" rx="2" fill="#8F3E2F"/>
+          <rect x="20" y="117" width="80" height="18" rx="2" fill="#8F3E2F"/>
+          <rect x="30" y="30" width="60" height="92" fill="#D7654E"/>
+          <path d="M32 40 C50 25,70 55,88 40" stroke="#8F1E1E" stroke-width="2" fill="none"/>
+          <path d="M32 54 C50 39,70 69,88 54" stroke="#8F1E1E" stroke-width="2" fill="none"/>
+          <path d="M32 68 C50 53,70 83,88 68" stroke="#8F1E1E" stroke-width="2" fill="none"/>
+          <path d="M32 82 C50 67,70 97,88 82" stroke="#8F1E1E" stroke-width="2" fill="none"/>
+          <path d="M32 96 C50 81,70 111,88 96" stroke="#8F1E1E" stroke-width="2" fill="none"/>
+          <path d="M32 110 C50 95,70 125,88 110" stroke="#8F1E1E" stroke-width="2" fill="none"/>
+          <path d="M96 98 C114 108,112 130,102 138" stroke="#8F1E1E" stroke-width="2.5" fill="none"/>
+        </svg>
+      </button>
+      <div class="pull-text">Tira del hilo rojo para seguir la experiencia</div>
+    </div>
+    <button class="back-link" onclick="showScreen(2)">← Volver</button>
+  </div>
+</div>
+
+<div class="screen" id="s4">
+  <div class="card photo-card">
+    <div class="eyebrow">Recuerdos</div>
+    <img class="photo" src="data:image/jpeg;base64,{img1_b64}" alt="Foto 1">
+    <img class="photo" src="data:image/jpeg;base64,{img2_b64}" alt="Foto 2">
+    <div class="btn-row">
+      <button class="btn secondary" onclick="showScreen(3)">← Volver</button>
+      <button class="btn" onclick="showScreen(5)">Seguir</button>
+    </div>
+  </div>
+</div>
+
+<div class="screen" id="s5">
+  <div class="card">
+    <div class="video-shell">
+      <div class="video-cover" id="videoCover" onclick="playVideoPro()">
+        <img src="https://img.youtube.com/vi/i9Z4nZiqrEM/maxresdefault.jpg" onerror="this.src='https://img.youtube.com/vi/i9Z4nZiqrEM/hqdefault.jpg'" alt="Vista previa del vídeo">
+        <div class="play-badge">
+          <div class="play-circle">
+            <div class="play-triangle"></div>
+          </div>
+        </div>
+        <div class="video-cover-text">
+          <div class="mini">PULSA PARA VERLO</div>
+          <div class="title">He preparado algo para ti</div>
+        </div>
+      </div>
+
+      <div class="video-frame-wrap" id="videoFrameWrap">
+        <iframe
+          id="youtubeFrame"
+          src=""
+          title="Vídeo"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowfullscreen>
+        </iframe>
+      </div>
+    </div>
+    <div class="video-tip">Así se oculta mucho mejor el aspecto de YouTube: primero ven una portada elegante y solo al pulsar aparece el vídeo.</div>
+    <div class="btn-row">
+      <button class="btn secondary" onclick="showScreen(4)">← Volver</button>
+      <button class="btn" onclick="showScreen(6)">Seguir</button>
+    </div>
+  </div>
+</div>
+
+<div class="screen" id="s6">
+  <div class="card">
+    <div class="eyebrow">Despedida</div>
+    <div class="message-box">
+      <h1 style="font-size:32px;">Gracias ❤️</h1>
+      <p>Gracias por llegar hasta aquí y por dedicar tu tiempo a vivir esta pequeña experiencia.</p>
+      <p>Ojalá este detalle te haya sacado una sonrisa y se quede guardado como un recuerdo bonito.</p>
+    </div>
+    <div class="btn-row">
+      <button class="btn secondary" onclick="showScreen(5)">← Volver</button>
+      <button class="btn" onclick="showScreen(7)">Seguir</button>
+    </div>
+  </div>
+</div>
+
+<div class="screen" id="s7">
+  <div class="card">
+    <div class="eyebrow">Tu marca</div>
+    <h1 style="font-size:30px;">Espacio para tu logo</h1>
+    <div class="logo-space">AQUÍ VA TU LOGO</div>
+    <p class="small">Puedes cambiar este espacio por tu logo o imagen de marca.</p>
+    <div class="btn-row">
+      <button class="btn secondary" onclick="showScreen(6)">← Volver</button>
+      <button class="btn" onclick="showScreen(1)">Volver al inicio</button>
+    </div>
+  </div>
+</div>
+
+<div class="dots" id="dots"></div>
+
+<script>
+const totalScreens = 7;
+let typingTimeout = null;
+let isTyping = false;
+const typedBlock = "Es una leyenda japonesa.\n\nDice que dos personas destinadas\na encontrarse\nestán unidas por un\nhilo rojo invisible.\n\nPuede estirarse, enredarse o\nperderse entre los caminos\nde la vida...\npero nunca se rompe.\n\nMe alegra que mi hilo rojo\nme haya llevado hasta";
+
+function renderDots(active){
+  const dots = document.getElementById('dots');
+  dots.innerHTML = '';
+  for(let i=1;i<=totalScreens;i++){
+    const d = document.createElement('div');
+    d.className = 'dot' + (i===active ? ' active' : '');
+    dots.appendChild(d);
+  }
+}
+
+function stopTyping(){
+  if(typingTimeout) clearTimeout(typingTimeout);
+  isTyping = false;
+}
+
+function typeWriter(text, element, speed, callback){
+  let i = 0;
+  isTyping = true;
+  element.innerHTML = '<span class="typed-cursor">|</span>';
+  function write(){
+    if(!isTyping) return;
+    const visible = text.slice(0, i).replace(/\n/g, '<br>');
+    element.innerHTML = visible + '<span class="typed-cursor">|</span>';
+    i++;
+    if(i <= text.length){
+      typingTimeout = setTimeout(write, speed);
+    } else {
+      element.innerHTML = visible;
+      isTyping = false;
+      if(callback) callback();
+    }
+  }
+  write();
+}
+
+function prepareScreen3(){
+  const typed = document.getElementById('typedText');
+  const tiBlock = document.getElementById('tiBlock');
+  const spoolBlock = document.getElementById('spoolBlock');
+  typed.innerHTML = '';
+  tiBlock.style.display = 'none';
+  spoolBlock.style.display = 'none';
+  stopTyping();
+  typeWriter(typedBlock, typed, 34, function(){
+    tiBlock.style.display = 'block';
+    spoolBlock.style.display = 'flex';
+  });
+}
+
+function resetVideoCover(){
+  const cover = document.getElementById('videoCover');
+  const wrap = document.getElementById('videoFrameWrap');
+  const frame = document.getElementById('youtubeFrame');
+  if(cover && wrap && frame){
+    cover.style.display = 'block';
+    wrap.style.display = 'none';
+    frame.src = '';
+  }
+}
+
+function playVideoPro(){
+  const cover = document.getElementById('videoCover');
+  const wrap = document.getElementById('videoFrameWrap');
+  const frame = document.getElementById('youtubeFrame');
+  if(cover && wrap && frame){
+    cover.style.display = 'none';
+    wrap.style.display = 'block';
+    frame.src = 'https://www.youtube-nocookie.com/embed/i9Z4nZiqrEM?autoplay=1&playsinline=1&rel=0&modestbranding=1&controls=1';
+  }
+}
+
+function showScreen(n){
+  const screens = document.querySelectorAll('.screen');
+  screens.forEach(s => s.classList.remove('active'));
+  const target = document.getElementById('s'+n);
+  if(target) target.classList.add('active');
+  window.scrollTo(0,0);
+  renderDots(n);
+
+  if(n === 3){
+    prepareScreen3();
+  } else {
+    stopTyping();
+  }
+
+  if(n !== 5){
+    resetVideoCover();
+  }
+}
+
+renderDots(1);
+</script>
+
+</body>
+</html>
